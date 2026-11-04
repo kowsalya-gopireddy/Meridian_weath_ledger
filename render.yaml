@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: meridian-wealth-ledger
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGODB_URI
+        sync: false      # your MongoDB Atlas connection string
+      - key: ENCRYPTION_KEY
+        sync: false      # 64 hex chars; save a copy in a password manager
