@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in – Meridian Wealth Ledger</title><link rel="stylesheet" href="/style.css"><script src="/theme.js"></script></head>
+<body><div class="auth-wrap">
+  <aside class="auth-side">
+    <div class="logo"><i>M</i> Meridian</div>
+    <h1>Know exactly what you are worth.</h1>
+    <p>One calm place for your income, spending, budgets, assets and debts.</p>
+    <ul><li>Your amounts and notes are encrypted before storage</li><li>See and control every device that is signed in</li><li>Budgets, trends and one-click export</li></ul>
+  </aside>
+  <main class="auth-main"><div class="auth-box">
+    <h2 id="title">Welcome back</h2><div class="sub" id="sub">Log in to see your finances.</div>
+    <div class="seg"><button id="tabLogin" class="on" type="button">Log in</button><button id="tabRegister" type="button">Create account</button></div>
+    <div id="banner" class="banner hidden" role="alert"></div>
+    <form id="authForm" novalidate>
+      <div class="field"><label for="username">Username</label><input id="username" autocomplete="username" placeholder="e.g. ravi_k"><div class="err" id="err-username"></div></div>
+      <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" placeholder="8+ characters, letters and numbers"><div class="meter hidden" id="meter"><span id="meterFill"></span></div><div class="help hidden" id="meterTxt"></div><div class="err" id="err-password"></div></div>
+      <div class="field hidden" id="codeField"><label for="code">Authentication code</label><input id="code" autocomplete="one-time-code" placeholder="6-digit code or recovery code"><div class="help">Open your authenticator app. Lost your phone? Use a recovery code.</div><div class="err" id="err-code"></div></div>
+      <button class="btn" id="submit" type="submit">Log in</button>
+    </form>
+  </div></main>
+</div><script src="/login.js"></script></body></html>

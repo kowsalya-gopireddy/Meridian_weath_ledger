@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meridian Wealth Ledger</title><link rel="stylesheet" href="/style.css"><script src="/theme.js"></script></head>
+<body><div class="container">
+<header class="bar">
+  <div class="logo"><i>M</i> Meridian</div>
+  <nav class="nav"><button class="on" data-view="overview">Overview</button><button data-view="entries">Entries</button><button data-view="budgets">Budgets</button><button data-view="goals">Goals</button><button data-view="security">Security</button></nav>
+  <div class="actions"><span class="chip" id="who"></span><button class="icon-btn" id="theme" type="button" aria-label="Toggle theme">◐</button><button class="btn-ghost" id="logout" type="button">Log out</button></div>
+</header>
+
+<section class="view" id="view-overview">
+  <div class="card hero">
+    <div class="hero-top"><div><div class="lbl">Your net worth</div><div class="big" id="net">–</div></div><button class="btn sm light" type="button" data-add>+ Add entry</button></div>
+    <div class="ratio"><span id="ratioFill" style="width:0"></span></div>
+    <div class="ratio-cap"><span id="capA"></span><span id="capL"></span></div>
+  </div>
+  <div class="stats" id="stats"></div>
+  <div class="cols">
+    <div class="card"><h2>Net worth over time</h2><div class="hint">Last 12 months</div><div class="chart" id="nwChart"></div></div>
+    <div class="card"><h2>What you own</h2><div class="hint">How your assets are spread</div><div id="alloc"></div></div>
+  </div>
+  <div class="cols">
+    <div class="card"><h2>Last 6 months</h2><div class="hint">Income versus spending</div><div class="chart" id="trend"></div>
+      <div class="legend"><span><b class="sw in"></b>Income</span><span><b class="sw out"></b>Spending</span></div></div>
+    <div class="card"><h2>Where your money goes</h2><div class="hint">Top expense categories this month</div><div id="cats"></div></div>
+  </div>
+  <div class="card"><h2>Budget check</h2><div class="hint">How you are doing this month</div><div id="alerts"></div></div>
+</section>
+
+<section class="view hidden" id="view-entries"><div class="card">
+  <div class="toolbar"><input id="q" type="search" placeholder="Search category or note…"><select id="monthSel"></select><button class="btn sm" type="button" data-add>+ Add entry</button></div>
+  <div class="pills" id="pills"></div>
+  <div class="wrap"><table><thead><tr><th data-sort="date">Date ↕</th><th>Type</th><th>Category</th><th>Note</th><th class="amt" data-sort="amount">Amount ↕</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
+  <div class="exports"><span class="hint">Download your data:</span><a class="btn-ghost" href="/api/export?format=csv">CSV</a><a class="btn-ghost" href="/api/export?format=json">JSON</a><span class="hint" style="margin-left:12px">Bring data in:</span><button class="btn-ghost" id="importBtn" type="button">Import CSV</button><input type="file" id="importFile" accept=".csv,text/csv" class="hidden"></div>
+</div></section>
+
+<section class="view hidden" id="view-budgets"><div class="cols">
+  <div class="card"><h2>Monthly budgets</h2><div class="hint">Your spending this month against the limits you set.</div><div id="budgetList"></div></div>
+  <div class="card"><h2>Set a budget</h2><div class="hint">Pick a category and a monthly limit. You will be warned at 80%.</div>
+    <div id="bBanner" class="banner hidden" role="alert"></div>
+    <form class="form" id="bForm" novalidate>
+      <div class="field full"><label for="bCat">Category</label><input id="bCat" list="catList" maxlength="50" placeholder="Groceries"><div class="err" id="err-bCat"></div></div>
+      <div class="field full"><label for="bLimit">Monthly limit</label><input id="bLimit" inputmode="decimal" autocomplete="off" placeholder="8000"><div class="err" id="err-bLimit"></div></div>
+      <div class="full"><button class="btn" type="submit">Save budget</button></div>
+    </form></div>
+</div></section>
+
+<section class="view hidden" id="view-goals"><div class="cols">
+  <div class="card"><h2>Savings goals</h2><div class="hint">Track what you are saving for.</div><div id="goalList"></div></div>
+  <div class="card"><h2>New goal</h2><div class="hint">For example: Emergency fund, New laptop, Holiday.</div>
+    <form class="form" id="gForm" novalidate>
+      <div class="field full"><label for="gName">Goal name</label><input id="gName" maxlength="50" placeholder="Emergency fund"><div class="err" id="err-gName"></div></div>
+      <div class="field"><label for="gTarget">Target amount</label><input id="gTarget" inputmode="decimal" autocomplete="off" placeholder="100000"><div class="err" id="err-gTarget"></div></div>
+      <div class="field"><label for="gSaved">Saved so far</label><input id="gSaved" inputmode="decimal" autocomplete="off" placeholder="0"><div class="err" id="err-gSaved"></div></div>
+      <div class="full"><button class="btn" type="submit">Create goal</button></div>
+    </form></div>
+</div></section>
+
+<section class="view hidden" id="view-security">
+  <div class="card shield" style="margin-bottom:16px"><div class="dot">🛡</div><div><h2>Your data is protected</h2><div class="hint" style="margin:0">Categories, notes and amounts are encrypted with AES-256-GCM, using a separate key for each user, before they are stored in the database. Your password is hashed and cannot be read by anyone, including us.</div></div></div>
+  <div class="sgrid">
+    <div class="card"><h2>Two-factor authentication</h2><div class="hint" id="tfaHint"></div><div id="tfaBox"></div></div>
+    <div class="card"><h2>Preferences</h2><div class="hint">Display only. Amounts are not converted between currencies.</div>
+      <div class="field"><label for="curSel">Currency</label><select id="curSel"><option>INR</option><option>USD</option><option>EUR</option><option>GBP</option></select></div>
+      <div class="help" style="margin-top:12px">Tip: press <b>N</b> anywhere to add an entry quickly.</div></div>
+    <div class="card"><h2>Change password</h2><div class="hint">All other devices are signed out when you change it.</div>
+      <form class="stack" id="pwForm" novalidate>
+        <div class="field"><label for="curPw">Current password</label><input id="curPw" type="password" autocomplete="current-password"><div class="err" id="err-curPw"></div></div>
+        <div class="field"><label for="newPw">New password</label><input id="newPw" type="password" autocomplete="new-password"><div class="err" id="err-newPw"></div></div>
+        <button class="btn" type="submit">Update password</button></form></div>
+    <div class="card"><h2>Signed-in devices</h2><div class="hint">Sign out anything you do not recognise.</div><div id="sessions"></div>
+      <button class="btn ghostbtn" id="logoutAll" type="button" style="margin-top:12px">Sign out of all devices</button></div>
+  </div>
+  <div class="sgrid">
+    <div class="card"><h2>Recent security activity</h2><div class="hint">Kept for 90 days.</div><div id="activity"></div></div>
+    <div class="card danger-zone"><h2>Delete account</h2><div class="hint">Permanently deletes your account and all your data. This cannot be undone. Export your data first if you want a copy.</div>
+      <form class="stack" id="delForm" novalidate>
+        <div class="field"><label for="delPw">Enter your password to confirm</label><input id="delPw" type="password" autocomplete="current-password"><div class="err" id="err-delPw"></div></div>
+        <button class="btn danger" type="submit">Delete my account</button></form></div>
+  </div>
+</section>
+</div>
+
+<dialog id="dlg"><div class="dlg-head"><h2 id="dlgTitle">Add an entry</h2><button class="x" id="dlgClose" type="button" aria-label="Close">✕</button></div>
+  <div id="banner" class="banner hidden" role="alert"></div>
+  <form class="form" id="form" novalidate>
+    <div class="field"><label for="type">What is it?</label><select id="type"><option value="income">Income (money in)</option><option value="expense">Expense (money out)</option><option value="asset">Asset (you own)</option><option value="liability">Liability (you owe)</option></select><div class="err" id="err-type"></div></div>
+    <div class="field"><label for="date">Date</label><input type="date" id="date"><div class="err" id="err-date"></div></div>
+    <div class="field"><label for="category">Category</label><input id="category" list="catList" maxlength="50" placeholder="Salary, Rent, Gold…"><div class="err" id="err-category"></div></div>
+    <div class="field"><label for="amount">Amount</label><input id="amount" inputmode="decimal" autocomplete="off" placeholder="1500.50"><div class="help">Numbers only</div><div class="err" id="err-amount"></div></div>
+    <div class="field full"><label for="description">Note (optional)</label><input id="description" maxlength="200" placeholder="Anything to remember"><div class="err" id="err-description"></div></div>
+    <div class="full"><button class="btn" id="save" type="submit">Add entry</button></div>
+  </form></dialog>
+<dialog id="dlg2fa"><div class="dlg-head"><h2>Two-factor setup</h2><button class="x" id="tfaClose" type="button" aria-label="Close">✕</button></div>
+  <div id="tfaStep1"><div class="hint">1. Scan this code with your authenticator app, or type the key by hand.</div>
+    <img id="qrImg" class="qr" alt="QR code for your authenticator app" width="200" height="200"><div class="secret" id="secretTxt"></div>
+    <div class="field" style="margin-top:14px"><label for="tfaCode">2. Enter the 6-digit code from the app</label><input id="tfaCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456"><div class="err" id="err-tfaCode"></div></div>
+    <button class="btn" id="tfaVerify" type="button" style="margin-top:12px">Verify and turn on</button></div>
+  <div id="tfaStep2" class="hidden"><div class="hint">Two-factor is on. Save these recovery codes somewhere safe. Each works once if you lose your phone. They are shown only now.</div>
+    <div class="codes" id="codesBox"></div><div class="btn-row"><button class="btn sm" id="copyCodes" type="button">Copy codes</button><button class="btn sm ghostbtn" id="tfaDone" type="button">I have saved them</button></div></div>
+</dialog>
+<datalist id="catList"></datalist>
+<div id="toast" role="status"></div><script src="/app.js"></script></body></html>
